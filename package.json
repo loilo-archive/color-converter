@@ -1,0 +1,19 @@
+{
+  "name": "color-converter",
+  "version": "1.0.0",
+  "description": "Allows transforming of colors from and to different formats and output as CSS.",
+  "main": "dist/color-converter.min.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Loilo/color-converter.git"
+  },
+  "author": "Florian Reuschel <florian@loilo.de> (http://loilo.de)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Loilo/color-converter/issues"
+  },
+  "homepage": "https://github.com/Loilo/color-converter#readme"
+}
