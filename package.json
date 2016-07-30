@@ -1,10 +1,11 @@
 {
   "name": "color-converter",
-  "version": "1.0.0",
-  "description": "Allows transforming of colors from and to different formats and output as CSS.",
+  "version": "1.2.0",
+  "description": "Allows transformation of colors from and to different formats and output as CSS.",
   "main": "dist/color-converter.min.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "prod": "tsc && uglifyjs --compress --mangle -- dist/color-converter.js > dist/color-converter.min.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,9 @@
   "bugs": {
     "url": "https://github.com/Loilo/color-converter/issues"
   },
-  "homepage": "https://github.com/Loilo/color-converter#readme"
+  "homepage": "https://github.com/Loilo/color-converter#readme",
+  "devDependencies": {
+    "typescript": "^1.8.10",
+    "uglify-js": "^2.7.0"
+  }
 }
