@@ -229,13 +229,17 @@ export default class Color {
 
   public fromHex(hex: string) {
     hex = hex.replace(new RegExp(' |#', 'g'), '')
-    if (hex.length === 3) {
+    if (hex.length === 3 || hex.length === 4) {
       hex = hex.replace(/(.)/g, '$1$1')
     }
 
     const hexMatch = hex.match(/../g)
 
-    return this.fromRGB(parseInt(hexMatch[0], 16), parseInt(hexMatch[1], 16), parseInt(hexMatch[2], 16))
+    if (hexMatch.length === 3) {
+      return this.fromRGB(parseInt(hexMatch[0], 16), parseInt(hexMatch[1], 16), parseInt(hexMatch[2], 16))
+    } else {
+      return this.fromRGBA(parseInt(hexMatch[0], 16), parseInt(hexMatch[1], 16), parseInt(hexMatch[2], 16), parseInt(hexMatch[3], 16) / 255)
+    }
   }
 
   public fromRGB(r: number, g: number, b: number) {
@@ -274,11 +278,11 @@ export default class Color {
     return this
   }
 
-  fromHSL(h: number, s: number, l: number) {
+  public fromHSL(h: number, s: number, l: number) {
     return this.fromHSLA(h, s, l, 1)
   }
 
-  fromHSLA(h: number, s: number, l: number, a: number) {
+  public fromHSLA(h: number, s: number, l: number, a: number) {
     s *= l < 0.5 ? l : (1 - l)
     const v = l + s
     s = (l + s) !== 0 ? (2 * s / (l + s)) : 0
@@ -291,11 +295,11 @@ export default class Color {
     return this
   }
 
-  fromHSV(h: number, s: number, v: number) {
+  public fromHSV(h: number, s: number, v: number) {
     return this.fromHSVA(h, s, v, 1)
   }
 
-  fromHSVA(h: number, s: number, v: number, a: number) {
+  public fromHSVA(h: number, s: number, v: number, a: number) {
     this._hue = h
     this._saturation = s
     this._value = v
@@ -304,8 +308,36 @@ export default class Color {
     return this
   }
 
-  fromColor(color: Color) {
-    return color.clone()
+  public fromColor(color: Color) {
+    this._hue = color.hue
+    this._saturation = color.saturation
+    this._value = color.value
+    this._alpha = color.alpha
+
+    return this
+  }
+
+  public fromCSS(css: string) {
+    const matches = css.match(/^\s*(#([0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})|(rgb|hsl)\s*\(\s*(.+?)\s*,\s*(.+?)\s*,\s*(.+?)\s*\)|(rgba|hsla)\s*\(\s*(.+?)\s*,\s*(.+?)\s*,\s*(.+?),\s*(.+?)\s*\)|([a-z]+))\s*$/i)
+
+    // Hex
+    if (matches[2] != null) {
+      return this.fromHex(matches[2])
+    } else if (matches[3] != null) {
+      switch (matches[3].toLowerCase()) {
+        case 'rgb': return this.fromRGB(parseInt(matches[4]), parseInt(matches[5]), parseInt(matches[6]))
+        case 'hsl': return this.fromHSL((parseInt(matches[4]) % 360) / 360, parseInt(matches[5]) / 100, parseInt(matches[6]) / 100)
+      }
+    } else if (matches[7] != null) {
+      switch (matches[7].toLowerCase()) {
+        case 'rgba': return this.fromRGBA(parseInt(matches[8]), parseInt(matches[9]), parseInt(matches[10]), parseFloat(matches[11]))
+        case 'hsla': return this.fromHSLA((parseInt(matches[8]) % 360) / 360, parseInt(matches[9]) / 100, parseInt(matches[10]) / 100, parseFloat(matches[11]))
+      }
+    } else if (matches[12] != null) {
+      return this.fromName(matches[12])
+    } else {
+      return this
+    }
   }
 
   // To
@@ -640,5 +672,9 @@ export default class Color {
 
   public static fromColor(color: Color) {
     return (new Color).fromColor(color)
+  }
+
+  public static fromCSS(css: string) {
+    return (new Color).fromCSS(css)
   }
 }

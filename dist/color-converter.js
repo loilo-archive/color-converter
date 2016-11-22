@@ -190,11 +190,16 @@ var Color = (function () {
     };
     Color.prototype.fromHex = function (hex) {
         hex = hex.replace(new RegExp(' |#', 'g'), '');
-        if (hex.length === 3) {
+        if (hex.length === 3 || hex.length === 4) {
             hex = hex.replace(/(.)/g, '$1$1');
         }
         var hexMatch = hex.match(/../g);
-        return this.fromRGB(parseInt(hexMatch[0], 16), parseInt(hexMatch[1], 16), parseInt(hexMatch[2], 16));
+        if (hexMatch.length === 3) {
+            return this.fromRGB(parseInt(hexMatch[0], 16), parseInt(hexMatch[1], 16), parseInt(hexMatch[2], 16));
+        }
+        else {
+            return this.fromRGBA(parseInt(hexMatch[0], 16), parseInt(hexMatch[1], 16), parseInt(hexMatch[2], 16), parseInt(hexMatch[3], 16) / 255);
+        }
     };
     Color.prototype.fromRGB = function (r, g, b) {
         return this.fromRGBA(r, g, b, 1);
@@ -250,7 +255,36 @@ var Color = (function () {
         return this;
     };
     Color.prototype.fromColor = function (color) {
-        return color.clone();
+        this._hue = color.hue;
+        this._saturation = color.saturation;
+        this._value = color.value;
+        this._alpha = color.alpha;
+        return this;
+    };
+    Color.prototype.fromCSS = function (css) {
+        var matches = css.match(/^\s*(#([0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})|(rgb|hsl)\s*\(\s*(.+?)\s*,\s*(.+?)\s*,\s*(.+?)\s*\)|(rgba|hsla)\s*\(\s*(.+?)\s*,\s*(.+?)\s*,\s*(.+?),\s*(.+?)\s*\)|([a-z]+))\s*$/i);
+        // Hex
+        if (matches[2] != null) {
+            return this.fromHex(matches[2]);
+        }
+        else if (matches[3] != null) {
+            switch (matches[3].toLowerCase()) {
+                case 'rgb': return this.fromRGB(parseInt(matches[4]), parseInt(matches[5]), parseInt(matches[6]));
+                case 'hsl': return this.fromHSL((parseInt(matches[4]) % 360) / 360, parseInt(matches[5]) / 100, parseInt(matches[6]) / 100);
+            }
+        }
+        else if (matches[7] != null) {
+            switch (matches[7].toLowerCase()) {
+                case 'rgba': return this.fromRGBA(parseInt(matches[8]), parseInt(matches[9]), parseInt(matches[10]), parseFloat(matches[11]));
+                case 'hsla': return this.fromHSLA((parseInt(matches[8]) % 360) / 360, parseInt(matches[9]) / 100, parseInt(matches[10]) / 100, parseFloat(matches[11]));
+            }
+        }
+        else if (matches[12] != null) {
+            return this.fromName(matches[12]);
+        }
+        else {
+            return this;
+        }
     };
     // To
     Color.prototype.toName = function () {
@@ -548,6 +582,9 @@ var Color = (function () {
     };
     Color.fromColor = function (color) {
         return (new Color).fromColor(color);
+    };
+    Color.fromCSS = function (css) {
+        return (new Color).fromCSS(css);
     };
     return Color;
 }());

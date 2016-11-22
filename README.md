@@ -33,6 +33,9 @@ Color.random()
 // ...from another color object
 Color.fromColor(color)
 
+// ...from a CSS color value (like "#aaa", "rgba(0,0,0,.5)" or "red")
+Color.fromCSS(cssString)
+
 // ...from an HTML color name
 Color.fromName(name)
 
@@ -62,7 +65,7 @@ let color = Color.fromHex('#639')
 
 // Converts the color to...
 
-// A string usable in CSS
+// ...a string usable in CSS
 color.css()
 // Returns "#663399"
 
@@ -100,7 +103,7 @@ color.toHSVA()
 ```
 
 ### Properties & Modifiers
-These modifiers will allow you to change a color according to your needs. Note that color objects are immutable so every modification returns a new color object.
+These modifiers will allow you to change a color according to your needs.
 
 ```javascript
 // Properties first. You can get and set those.

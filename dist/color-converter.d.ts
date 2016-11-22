@@ -189,7 +189,8 @@ export default class Color {
     fromHSLA(h: number, s: number, l: number, a: number): this;
     fromHSV(h: number, s: number, v: number): this;
     fromHSVA(h: number, s: number, v: number, a: number): this;
-    fromColor(color: Color): Color;
+    fromColor(color: Color): this;
+    fromCSS(css: string): this;
     toName(): string;
     toHex(): string;
     toRGB(): RGB;
@@ -240,4 +241,5 @@ export default class Color {
     static fromHSV(h: number, s: number, v: number): Color;
     static fromHSVA(h: number, s: number, v: number, a: number): Color;
     static fromColor(color: Color): Color;
+    static fromCSS(css: string): Color;
 }
