@@ -269,14 +269,14 @@ var Color = (function () {
         }
         else if (matches[3] != null) {
             switch (matches[3].toLowerCase()) {
-                case 'rgb': return this.fromRGB(parseInt(matches[4]), parseInt(matches[5]), parseInt(matches[6]));
-                case 'hsl': return this.fromHSL((parseInt(matches[4]) % 360) / 360, parseInt(matches[5]) / 100, parseInt(matches[6]) / 100);
+                case 'rgb': return this.fromRGB(this.scaleToOne(matches[4]), this.scaleToOne(matches[5]), this.scaleToOne(matches[6]));
+                case 'hsl': return this.fromHSL((parseInt(matches[4]) % 360) / 360, this.scaleToOne(matches[5]), this.scaleToOne(matches[6]));
             }
         }
         else if (matches[7] != null) {
             switch (matches[7].toLowerCase()) {
-                case 'rgba': return this.fromRGBA(parseInt(matches[8]), parseInt(matches[9]), parseInt(matches[10]), parseFloat(matches[11]));
-                case 'hsla': return this.fromHSLA((parseInt(matches[8]) % 360) / 360, parseInt(matches[9]) / 100, parseInt(matches[10]) / 100, parseFloat(matches[11]));
+                case 'rgba': return this.fromRGBA(this.scaleToOne(matches[8]) * 255, this.scaleToOne(matches[9]) * 255, this.scaleToOne(matches[10]) * 255, parseFloat(matches[11]));
+                case 'hsla': return this.fromHSLA((this.scaleToOne(matches[8]) % 360) / 360, this.scaleToOne(matches[9]) / 100, this.scaleToOne(matches[10]) / 100, parseFloat(matches[11]));
             }
         }
         else if (matches[12] != null) {
@@ -382,6 +382,20 @@ var Color = (function () {
     };
     Color.prototype.restrict8bit = function (value) {
         return parseInt(String(this.restrict(value, 0, 255)));
+    };
+    Color.prototype.scaleToOne = function (value, base) {
+        if (base === void 0) { base = null; }
+        // Auto-detect base
+        if (base == null) {
+            // Use 100 if percentage
+            if (value.match(/^.+%\s*$/)) {
+                base = 100;
+            }
+            else {
+                base = 255;
+            }
+        }
+        return this.restrict1bit(parseFloat(value) / base);
     };
     // Modify
     Color.prototype.fade = function (percent) {

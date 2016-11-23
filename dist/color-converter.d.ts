@@ -202,6 +202,7 @@ export default class Color {
     protected restrict(value: number, min: number, max: number): number;
     protected restrict1bit(value: number): number;
     protected restrict8bit(value: number): number;
+    protected scaleToOne(value: string, base?: number): number;
     fade(percent: number): this;
     rotate(degrees: number): this;
     saturate(percent: number): this;
