@@ -1,6 +1,6 @@
 {
   "name": "color-converter",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Allows transformation of colors from and to different formats and output as CSS.",
   "main": "dist/color-converter.min.js",
   "scripts": {
