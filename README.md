@@ -1,6 +1,8 @@
 # color-converter
 Allows conversion of colors with JavaScript from and to different formats and output as CSS.
 
+> This project is no longer actively maintained since it doesn't really have a USP. Maybe use the great [color](https://www.npmjs.com/package/color) package instead.
+
 ## Usage
 
 The class is pretty much self-documenting. Just risk a look into `color-converter.ts`. :)
